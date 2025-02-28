@@ -1,6 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
-// Initialize Sequelize with MySQL Connection
 const sequelize = new Sequelize('picet', 'root', '', {
     host: 'localhost',
     dialect: 'mysql',
@@ -8,7 +7,6 @@ const sequelize = new Sequelize('picet', 'root', '', {
 
 });
 
-// Users Table
 const User = sequelize.define('User', {
     uid: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     email: { type: DataTypes.STRING, allowNull: false, unique: true },
@@ -19,7 +17,6 @@ const User = sequelize.define('User', {
     approval_status: { type: DataTypes.ENUM('pending', 'approved', 'rejected'), defaultValue: 'pending' }
 }, { tableName: 'users', timestamps: false });
 
-// Research Papers Table
 const ResearchPaper = sequelize.define('ResearchPaper', {
     rid: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     author_id: { type: DataTypes.INTEGER, allowNull: false, references: { model: User, key: 'uid' } },
@@ -29,14 +26,12 @@ const ResearchPaper = sequelize.define('ResearchPaper', {
     domain: { type: DataTypes.STRING, allowNull: false }
 }, { tableName: 'research_papers', timestamps: false });
 
-// Evaluator Assignments Table
 const EvaluatorAssignment = sequelize.define('EvaluatorAssignment', {
     eaid: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     rid: { type: DataTypes.INTEGER, allowNull: false, references: { model: ResearchPaper, key: 'rid' } },
     uid: { type: DataTypes.INTEGER, allowNull: false, references: { model: User, key: 'uid' } }
 }, { tableName: 'evaluator_assignments', timestamps: false });
 
-// Research Paper Ratings Table
 const ResearchPaperRating = sequelize.define('ResearchPaperRating', {
     rprid: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     rid: { type: DataTypes.INTEGER, allowNull: false, references: { model: ResearchPaper, key: 'rid' } },
@@ -48,7 +43,6 @@ const ResearchPaperRating = sequelize.define('ResearchPaperRating', {
     q5: { type: DataTypes.INTEGER, validate: { min: 1, max: 10 } }
 }, { tableName: 'research_paper_ratings', timestamps: false });
 
-// Define Relationships
 User.hasMany(ResearchPaper, { foreignKey: 'author_id' });
 ResearchPaper.belongsTo(User, { foreignKey: 'author_id' });
 
@@ -64,10 +58,8 @@ ResearchPaperRating.belongsTo(User, { foreignKey: 'uid' });
 ResearchPaper.hasMany(ResearchPaperRating, { foreignKey: 'rid' });
 ResearchPaperRating.belongsTo(ResearchPaper, { foreignKey: 'rid' });
 
-// Sync Models with Database
 sequelize.sync()
     .then(() => console.log("Database & tables created!"))
     .catch(error => console.error("Error syncing database: ", error));
 
-// Export Models
 module.exports = { User, ResearchPaper, EvaluatorAssignment, ResearchPaperRating, sequelize };
