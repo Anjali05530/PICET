@@ -1,18 +1,22 @@
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors'); 
+const cors = require('cors');
 const router = require('./routes/routes');
 const { sequelize } = require('./models/model');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
-app.use(express.json()); 
-app.use(express.urlencoded({ extended: true })); // Support URL-encoded data
+app.use(cors({
+    origin: process.env.CLIENT_URL || 'http://localhost:3000', // Update this with your frontend URL
+    credentials: true,
+    methods: ["GET", "POST"],
+}));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use('/api', router);
 
-// Database Connection
 (async () => {
     try {
         await sequelize.authenticate();
