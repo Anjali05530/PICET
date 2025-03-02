@@ -5,7 +5,7 @@ import { TfiEmail } from "react-icons/tfi";
 import { RiLock2Line } from "react-icons/ri";
 import { IoEyeOutline, IoEyeOff } from "react-icons/io5";
 import { FaChevronDown } from "react-icons/fa";
-import "../Styles/Register.css";
+import "../Styles/style.css";
 
 const Signup = () => {
     const [name, setName] = useState("");
